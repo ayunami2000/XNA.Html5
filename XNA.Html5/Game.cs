@@ -5,8 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content;
-using Bridge;
-using Bridge.Html5;
+using static H5.Core.dom;
 
 namespace Microsoft.Xna.Framework
 {
@@ -81,7 +80,7 @@ namespace Microsoft.Xna.Framework
 
         private void GameLoop()
         {
-            Window.ClearTimeout(timeoutId);
+            window.clearTimeout(timeoutId);
             if (IsActive)
             {
                 gameTime.ElapsedGameTime = DateTime.Now - timeNow;
@@ -108,10 +107,10 @@ namespace Microsoft.Xna.Framework
                 timeNow = DateTime.Now;
                 leadingTime = 100;
             }
-            timeoutId = Window.SetTimeout(() =>
+            timeoutId = (int) window.setTimeout(new WindowTimers.setTimeoutFn(args =>
             {
                 GameLoop();
-            }, leadingTime);
+            }), leadingTime);
 
         }
 

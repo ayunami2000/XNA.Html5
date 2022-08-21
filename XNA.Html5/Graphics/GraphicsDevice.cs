@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Input.Touch;
-using Bridge.Html5;
+using static H5.Core.dom;
 
 namespace Microsoft.Xna.Framework.Graphics
 {
@@ -27,71 +27,71 @@ namespace Microsoft.Xna.Framework.Graphics
         public GraphicsDevice()
         {
             Html5.Canvas = new HTMLCanvasElement();
-            Html5.Canvas.Width = Window.InnerWidth;
-            Html5.Canvas.Height = Window.InnerHeight;
-            Document.Body.AppendChild(Html5.Canvas);
-            Viewport = new Viewport(0, 0, Html5.Canvas.Width, Html5.Canvas.Height);
-            Html5.Context = Html5.Canvas.GetContext("2d").As<CanvasRenderingContext2D>();
-            Document.Body.SetAttribute("style", "margin:0px;overflow:hidden;");
-            Html5.Canvas.OnMouseDown = (e) =>
+            Html5.Canvas.width = (uint)window.innerWidth;
+            Html5.Canvas.height = (uint)window.innerHeight;
+            document.body.appendChild(Html5.Canvas);
+            Viewport = new Viewport(0, 0, (int)Html5.Canvas.width, (int)Html5.Canvas.height);
+            Html5.Context = Html5.Canvas.getContext("2d").As<CanvasRenderingContext2D>();
+            document.body.setAttribute("style", "margin:0px;overflow:hidden;");
+            Html5.Canvas.onmousedown = (e) =>
             {
                 Html5.MouseState = new MouseState();
                 Html5.MouseState.LeftButton = ButtonState.Pressed;
-                Html5.MouseState.Position = new Point(e.ClientX, e.ClientY);
+                Html5.MouseState.Position = new Point((int)e.clientX, (int)e.clientY);
                 Html5.Touches.Clear();
-                TouchLocation loc = new TouchLocation(0, TouchLocationState.Pressed, new Vector2(e.ClientX, e.ClientY));
+                TouchLocation loc = new TouchLocation(0, TouchLocationState.Pressed, new Vector2((int)e.clientX, (int)e.clientY));
                 Html5.Touches.Add(loc);
             };
-            Html5.Canvas.OnMouseMove = (e) =>
+            Html5.Canvas.onmousemove = (e) =>
             {
                 if (TouchPanel.didPress)
                 {
                     Html5.Touches.Clear();
-                    TouchLocation loc = new TouchLocation(0, TouchLocationState.Moved, new Vector2(e.ClientX, e.ClientY));
+                    TouchLocation loc = new TouchLocation(0, TouchLocationState.Moved, new Vector2((int)e.clientX, (int)e.clientY));
                     Html5.Touches.Add(loc);
                 }
             };
-            Html5.Canvas.OnMouseUp = (e) =>
+            Html5.Canvas.onmouseup = (e) =>
             {
                 Html5.MouseState = new MouseState();
                 Html5.MouseState.LeftButton = ButtonState.Released;
-                Html5.MouseState.Position = new Point(e.ClientX, e.ClientY);
+                Html5.MouseState.Position = new Point((int)e.clientX, (int)e.clientY);
                 List<TouchLocation> locs = new List<TouchLocation>();
-                TouchLocation loc = new TouchLocation(0, TouchLocationState.Released, new Vector2(e.ClientX, e.ClientY));
+                TouchLocation loc = new TouchLocation(0, TouchLocationState.Released, new Vector2((int)e.clientX, (int)e.clientY));
                 locs.Add(loc);
                 Html5.Touches.Clear();
                 Html5.Touches = locs;
             };
-            Document.Body.OnTouchStart = (e) =>
+            document.body.ontouchstart = (e) =>
             {
-                e.PreventDefault();
+                e.preventDefault();
             };
-            Html5.Canvas.OnTouchStart = (e) =>
+            Html5.Canvas.ontouchstart = (e) =>
             {
-                e.PreventDefault();
+                e.preventDefault();
                 Html5.Touches.Clear();
-                foreach (var touch in e.Touches)
+                foreach (var touch in e.touches)
                 {
-                    TouchLocation loc = new TouchLocation(0, TouchLocationState.Pressed, new Vector2(touch.ClientX, touch.ClientY));
+                    TouchLocation loc = new TouchLocation(0, TouchLocationState.Pressed, new Vector2((int)touch.clientX, (int)touch.clientY));
                     Html5.Touches.Add(loc);
                 }
             };
-            Html5.Canvas.OnTouchMove = (e) =>
+            Html5.Canvas.ontouchmove = (e) =>
             {
-                e.PreventDefault();
+                e.preventDefault();
                 if (TouchPanel.didPress)
                 {
                     Html5.Touches.Clear();
-                    foreach (var touch in e.Touches)
+                    foreach (var touch in e.touches)
                     {
-                        TouchLocation loc = new TouchLocation(0, TouchLocationState.Moved, new Vector2(touch.ClientX, touch.ClientY));
+                        TouchLocation loc = new TouchLocation(0, TouchLocationState.Moved, new Vector2((int)touch.clientX, (int)touch.clientY));
                         Html5.Touches.Add(loc);
                     }
                 }
             };
-            Html5.Canvas.OnTouchEnd = (e) =>
+            Html5.Canvas.ontouchend = (e) =>
             {
-                e.PreventDefault();
+                e.preventDefault();
                 List<TouchLocation> locs = new List<TouchLocation>();
                 foreach (var touch in Html5.Touches)
                 {
@@ -101,9 +101,9 @@ namespace Microsoft.Xna.Framework.Graphics
                 Html5.Touches.Clear();
                 Html5.Touches = locs;
             };
-            Html5.Canvas.OnTouchLeave = (e) =>
+            Html5.Canvas.ontouchcancel = (e) =>
             {
-                e.PreventDefault();
+                e.preventDefault();
                 List<TouchLocation> locs = new List<TouchLocation>();
                 foreach (var touch in Html5.Touches)
                 {
@@ -113,11 +113,11 @@ namespace Microsoft.Xna.Framework.Graphics
                 Html5.Touches.Clear();
                 Html5.Touches = locs;
             };
-            Window.OnResize = (e) =>
+            window.onresize = (e) =>
             {
-                Html5.Canvas.Width = Window.InnerWidth;
-                Html5.Canvas.Height = Window.InnerHeight;
-                Viewport = new Viewport(0, 0, Html5.Canvas.Width, Html5.Canvas.Height);
+                Html5.Canvas.width = (uint)window.innerWidth;
+                Html5.Canvas.height = (uint)window.innerHeight;
+                Viewport = new Viewport(0, 0, (int)Html5.Canvas.width, (int)Html5.Canvas.height);
                 try
                 {
                     Html5.OnResize();
@@ -128,13 +128,13 @@ namespace Microsoft.Xna.Framework.Graphics
 
         public void Clear(Color color)
         {
-            Html5.Context.FillStyle = string.Format("rgba({0},{1},{2},{3})",
+            Html5.Context.fillStyle = string.Format("rgba({0},{1},{2},{3})",
                             Convert.ToInt32(color.R),
                             Convert.ToInt32(color.G),
                             Convert.ToInt32(color.B),
                             Convert.ToInt32(color.A)
                             );
-            Html5.Context.FillRect(0, 0, Html5.Canvas.Width, Html5.Canvas.Height);
+            Html5.Context.fillRect(0, 0, Html5.Canvas.width, Html5.Canvas.height);
         }
 
         internal void Draw(DrawSpec spec)
@@ -142,18 +142,18 @@ namespace Microsoft.Xna.Framework.Graphics
             if (spec.transform != null)
             {
                 var transform = spec.transform.Value;
-                Html5.Context.SetTransform(transform.M11, transform.M12, transform.M21, transform.M22, transform.M41, transform.M42);
+                Html5.Context.setTransform(transform.M11, transform.M12, transform.M21, transform.M22, transform.M41, transform.M42);
             }
             foreach (var sprite in spec.spriteSpecs)
             {
-                Html5.Context.Save();
-                Html5.Context.Translate(sprite.position.X, sprite.position.Y);
-                Html5.Context.Rotate(sprite.rotation);
+                Html5.Context.save();
+                Html5.Context.translate(sprite.position.X, sprite.position.Y);
+                Html5.Context.rotate(sprite.rotation);
                 if (sprite.text == null)
                 {
                     if (sprite.color.PackedValue != Color.White.PackedValue) //Save some CPU/GPU resource
                     {
-                        Html5.Context.GlobalAlpha = (float)sprite.color.PackedValue / (float)Color.White.PackedValue;
+                        Html5.Context.globalAlpha = (float)sprite.color.PackedValue / (float)Color.White.PackedValue;
                     }
                 }
                 float dx = -sprite.origin.X * (sprite.useVScale ? sprite.vScale.X : sprite.scale);
@@ -166,31 +166,31 @@ namespace Microsoft.Xna.Framework.Graphics
                         float dh = sprite.texture.Height * (sprite.useVScale ? sprite.vScale.Y : sprite.scale);
                         if (sprite.effects == SpriteEffects.FlipHorizontally)
                         {
-                            Html5.Context.Scale(-1, 1);
-                            Html5.Context.Translate(-dw, 0f);
+                            Html5.Context.scale(-1, 1);
+                            Html5.Context.translate(-dw, 0f);
                         }
                         else if (sprite.effects == SpriteEffects.FlipVertically)
                         {
-                            Html5.Context.Scale(1, -1);
-                            Html5.Context.Translate(0f, -dh);
+                            Html5.Context.scale(1, -1);
+                            Html5.Context.translate(0f, -dh);
                         }
-                        Html5.Context.DrawImage(sprite.texture.Image,
+                        Html5.Context.drawImage(sprite.texture.Image,
                             dx, dy, dw, dh
                             );
                     }
                     else //font
                     {
-                        Html5.Context.TextAlign = CanvasTypes.CanvasTextAlign.Start;
+                        Html5.Context.textAlign = "start";
                         var color = sprite.color;
-                        Html5.Context.FillStyle = string.Format("rgba({0},{1},{2},{3})",
+                        Html5.Context.fillStyle = string.Format("rgba({0},{1},{2},{3})",
                             Convert.ToInt32(color.R),
                             Convert.ToInt32(color.G),
                             Convert.ToInt32(color.B),
                             Convert.ToInt32(color.A)
                             );
                         float size = SpriteFont.Size * sprite.scale;
-                        Html5.Context.Font = Convert.ToInt32(size) + "px " + SpriteFont.Font;
-                        Html5.Context.FillText(sprite.text, Convert.ToInt32(dx), 0);
+                        Html5.Context.font = Convert.ToInt32(size) + "px " + SpriteFont.Font;
+                        Html5.Context.fillText(sprite.text, Convert.ToInt32(dx), 0);
                     }
                 }
                 else
@@ -204,23 +204,23 @@ namespace Microsoft.Xna.Framework.Graphics
                     float dh = rec.Height * (sprite.useVScale ? sprite.vScale.Y : sprite.scale);
                     if (sprite.effects == SpriteEffects.FlipHorizontally)
                     {
-                        Html5.Context.Scale(-1, 1);
-                        Html5.Context.Translate(-dw, 0f);
+                        Html5.Context.scale(-1, 1);
+                        Html5.Context.translate(-dw, 0f);
                     }
                     else if (sprite.effects == SpriteEffects.FlipVertically)
                     {
-                        Html5.Context.Scale(1, -1);
-                        Html5.Context.Translate(0f, -dh);
+                        Html5.Context.scale(1, -1);
+                        Html5.Context.translate(0f, -dh);
                     }
-                    Html5.Context.DrawImage(sprite.texture.Image,
+                    Html5.Context.drawImage(sprite.texture.Image,
                         sx, sy, sw, sh, dx, dy, dw, dh
                         );
                 }
-                Html5.Context.Restore();
+                Html5.Context.restore();
             }
             if (spec.transform != null)
             {
-                Html5.Context.SetTransform(1, 0, 0, 1, 0, 0);
+                Html5.Context.setTransform(1, 0, 0, 1, 0, 0);
             }
         }
     }

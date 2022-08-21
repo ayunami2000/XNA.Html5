@@ -5,8 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Audio;
-using Bridge;
-using Bridge.Html5;
+using H5;
 
 namespace Microsoft.Xna.Framework.Media
 {

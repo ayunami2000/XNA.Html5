@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Bridge;
-using Bridge.Html5;
+using H5;
+using static H5.Core.dom;
 
 namespace Microsoft.Xna.Framework
 {
@@ -13,7 +13,7 @@ namespace Microsoft.Xna.Framework
         public static void Init()
         {
             var script = new HTMLScriptElement();
-            script.InnerHTML = @"function BufferLoader(context, urlList, callback) {
+            script.innerHTML = @"function BufferLoader(context, urlList, callback) {
     this.context = context;
     this.urlList = urlList;
     this.onload = callback;
@@ -115,7 +115,7 @@ function addAudioContext() {
 function removeAllAudioContexts() {
     audioContexts = [];
 }";
-            Document.Body.AppendChild(script);
+            document.body.appendChild(script);
         }
 
         public static void Activate()

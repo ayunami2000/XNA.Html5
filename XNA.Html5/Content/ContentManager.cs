@@ -7,7 +7,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Media;
 
-using Bridge.Html5;
+using static H5.Core.dom;
 
 namespace Microsoft.Xna.Framework.Content
 {
@@ -60,14 +60,14 @@ namespace Microsoft.Xna.Framework.Content
             {
                 var t = new Texture2D();
                 var img = new HTMLImageElement();
-                img.OnLoad = (e) =>
+                img.onload = (e) =>
                 {
                     t.Image = img;
                     t.Name = name;
                     ResourcesReady[name] = true;
                     NotifyIfResourcesLoaded();
                 };
-                img.Src = RootDirectory + "/" + name + ".png";            
+                img.src = RootDirectory + "/" + name + ".png";            
                 return t as T;
             }
             else if (typeof(T) == typeof(SoundEffect))

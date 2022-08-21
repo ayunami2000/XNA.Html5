@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Bridge.Html5;
+using static H5.Core.dom;
 
 namespace Microsoft.Xna.Framework.Graphics
 {
@@ -18,8 +18,8 @@ namespace Microsoft.Xna.Framework.Graphics
             set
             {
                 image = value;
-                Width = image.NaturalWidth;
-                Height = image.NaturalHeight;
+                Width = (int)image.naturalWidth;
+                Height = (int)image.naturalHeight;
             }
         }
 
